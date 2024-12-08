@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5444:5432"  # Exposing the PostgreSQL port on host 5444
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ollama_network
+
+  ollama_api:
+    image: ollama/ollama:latest  # Assuming an Ollama API docker image exists
+    container_name: ollama_api
+    ports:
+      - "11434:11434"  # Exposing the Ollama API port on the host
+    environment:
+      - OLLAMA_API_KEY=your_api_key  # Set your Ollama API key here if needed
+    networks:
+      - ollama_network
+
+networks:
+  ollama_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
